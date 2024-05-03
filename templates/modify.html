@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do Modify</title>
+    <h1>To Do Modify</h1>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<form action="/todo/modify" method="post">
+    <label for="tno"></label>
+    <input type="text" id="tno" name="tno" value="{{todoDTO.tno}}" readonly>
+    <label for="title"></label>
+    <input type="text" id="title" name="title" value="{{todoDTO.title}}">
+    <label for="dueDate"></label>
+    <input type="date" id="dueDate" name="dueDate" value="{{todoDTO.dueDate}}" >
+    <span>finished: </span><input type="checkbox" name="finished" value="true" {{ "checked" if todoDTO.finished else "" }}>
+    <label for="finished"></label>
+    <button type="submit" class="button">수정</button>
+</form>
+<form action="/todo/delete" method="post">
+    <input type="hidden" name = "tno" value="{{todoDTO.tno}}">
+    <button type="submit" class="button">삭제</button>
+</form>
+</body>
+</html>

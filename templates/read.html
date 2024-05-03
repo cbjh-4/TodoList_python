@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Todo List</title>
+</head>
+<body>
+    <div>
+        <input type="text" name = "tno" value="{{todoDTO.tno}}" readonly>
+    </div>
+    <div>
+        <input type="text" name = "title" value="{{todoDTO.title}}" readonly>
+    </div>
+    <div>
+        <input type="date" name = "dueDate" value="{{todoDTO.dueDate}}" readonly>
+    </div>
+    <div>
+        <!-- 사용자가 변경할 수 없도록 disabled 속성을 사용 -->
+        <input type="checkbox" name="finished" value="true" {{ "checked" if todoDTO.finished else "" }} disabled>
+    </div>
+    <div>
+        <a href="/todo/modify?tno={{todoDTO.tno}}">MODIFY</a>
+        <a href="/todo/list">List</a>
+    </div>
+</body>
+</html>

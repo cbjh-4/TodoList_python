@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <ul>
+        {% for todo in todos %}
+        <li>
+            <strong><span><a href="/todo/read?tno={{todo.tno}}">{{todo.tno}} : {{ todo.title }}</a></span></strong> - {{ todo.duedate }}{% if todo.finished %} DONE {% else %} NOT YET {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    <div><a href="/todo/register">Register</a></div>
+</body>
+</html>
