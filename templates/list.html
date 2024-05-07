@@ -7,6 +7,7 @@
 </head>
 <body>
     <h1>Todo List</h1>
+    <h2>{{loginInfo.mname}}</h2>
     <ul>
         {% for todo in todos %}
         <li>
@@ -15,5 +16,15 @@
         {% endfor %}
     </ul>
     <div><a href="/todo/register">Register</a></div>
+    <div>
+        <form action="/logIn" method="get">
+            <button type="submit">LOGIN</button>
+        </form>
+    </div>
+    <div>
+        <form action="/logOut" method="post">
+            <button type="submit">LOGOUT</button>
+        </form>
+    </div>
 </body>
 </html>
