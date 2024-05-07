@@ -1,9 +1,13 @@
-from fastapi import FastAPI, Request, Form, Query
+from fastapi import FastAPI, Request, Form, Query, Request, Response, Depends
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from dao.todoDAO import selectAll, register, selectOne, modify, delete
+from dao.memberDAO import getWithPassword
 from dto.todoDTO import TodoDTO
+from dto.memberDTO import MemberDTO
 from datetime import date, datetime
+from starlette.responses import RedirectResponse
+from starlette.middleware.sessions import SessionMiddleware
 
 
 app = FastAPI()
@@ -13,7 +17,8 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/todo/list")
 async def read_todos(request: Request):
     todos = selectAll()
-    return templates.TemplateResponse("list.html", {"request": request, "todos": todos})
+    loginInfo = request.session.get('loginInfo')   
+    return templates.TemplateResponse("list.html", {"request": request, "todos": todos, "loginInfo" : loginInfo})
 
 
 @app.get("/todo/register")
@@ -45,7 +50,7 @@ async def read_todo(request: Request, tno: int = Query(..., description="The ID 
     return templates.TemplateResponse("read.html", {"request": request, "todoDTO" : todoDTO})
 
 @app.get("/todo/modify")
-async def modify_todo_pre(request: Request, tno: int =Query(..., description="The ID of the todo to fetch")):
+async def modify_todo_view(request: Request, tno: int =Query(..., description="The ID of the todo to fetch")):
     todo = selectOne(tno)
     if todo:
             todoDTO = TodoDTO(
@@ -68,4 +73,27 @@ async def modify_todo(tno : int = Form(...),
 @app.post("/todo/delete")
 async def delete_todo(tno : int = Form(...)):
     delete(tno)
+    return RedirectResponse(url='/todo/list', status_code=303)
+
+@app.get("/logIn")
+async def login_member_view(request : Request):
+    return templates.TemplateResponse("login.html", {"request" : request})
+
+# 세션 미들웨어 설정
+app.add_middleware(SessionMiddleware, secret_key="!secret!")
+
+# 로그인 기능
+@app.post("/logIn")
+async def login_member(request: Request, mid: str = Form(...), mpw: str = Form(...)):
+    memberDTO = MemberDTO(mid=mid, mpw=mpw)
+    memberDTO_n = getWithPassword(memberDTO)
+    if memberDTO_n:
+        request.session['loginInfo'] = dict(memberDTO_n)
+        return RedirectResponse(url="/todo/list", status_code=303)
+    return "Login Failed"
+
+# 로그아웃 기능
+@app.post("/logOut")
+async def logout_member(request: Request):
+    request.session.pop('loginInfo', None)
     return RedirectResponse(url='/todo/list', status_code=303)
